@@ -16,7 +16,7 @@ The predecessor of [AmneziaWG](https://docs.amnezia.org/documentation/amnezia-wg
 
 ##
 <div align="center">
-  <img src="/docs/screenshots/menu.PNG" width="80%" /> 
+  <img src="/docs/screenshots/menu.PNG" width="100%" /> 
 </div>
 
 ##
