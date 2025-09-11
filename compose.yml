@@ -1,0 +1,140 @@
+services:
+   nginx:
+     image: jwilder/nginx-proxy:latest
+     container_name: nginx
+     restart: unless-stopped
+     deploy:
+       resources:
+         limits:
+           memory: 128M
+         reservations:
+           memory: 64M
+     ports:
+       - "80:80"
+       - "443:443"
+     volumes:
+       - conf.d:/etc/nginx/conf.d
+       - vhost.d:/etc/nginx/vhost.d
+       - html:/usr/share/nginx/html
+       - certs:/etc/nginx/certs:ro
+       - /var/run/docker.sock:/tmp/docker.sock:ro
+     healthcheck:
+       test: ["CMD", "curl", "http://localhost:80"]
+       start_period: 10s
+       retries: 3
+       interval: 60s
+     networks:
+       - nginx
+   letsencrypt:
+     image: jrcs/letsencrypt-nginx-proxy-companion:latest
+     container_name: letsencrypt
+     deploy:
+       resources:
+         limits:
+           memory: 64M
+         reservations:
+           memory: 32M
+     restart: unless-stopped
+     environment:
+       - NGINX_PROXY_CONTAINER=nginx
+     volumes:
+       - certs:/etc/nginx/certs:rw
+       - conf.d:/etc/nginx/conf.d
+       - vhost.d:/etc/nginx/vhost.d
+       - html:/usr/share/nginx/html
+       - /var/run/docker.sock:/var/run/docker.sock:ro
+     healthcheck:
+       test: ["CMD", "pgrep", "-x", "letsencrypt_ser"]
+       start_period: 10s
+       retries: 3
+       interval: 30s
+     networks:
+       - nginx
+   wireguard:
+     image: ghcr.io/w0rng/amnezia-wg-easy
+     container_name: amnezia
+     restart: unless-stopped
+     deploy:
+       resources:
+         limits:
+           memory: 128M
+         reservations:
+           memory: 64M
+     ports:
+     volumes:
+       - etc_wireguard:/etc/wireguard
+     environment:
+       - LANG=
+       - WG_HOST=
+       - PASSWORD_HASH=
+       - WG_PORT=
+       - PORT=51821
+       - WG_DEFAULT_ADDRESS=
+       - WG_DEFAULT_DNS=1.1.1.1, 8.8.8.8, 8.8.4.4
+       - WG_ALLOWED_IPS=0.0.0.0/0, ::/0
+       - WG_PERSISTENT_KEEPALIVE=25
+       # - WG_PRE_UP=echo "Pre Up" > /etc/wireguard/pre-up.txt
+       # - WG_POST_UP=echo "Post Up" > /etc/wireguard/post-up.txt
+       # - WG_PRE_DOWN=echo "Pre Down" > /etc/wireguard/pre-down.txt
+       # - WG_POST_DOWN=echo "Post Down" > /etc/wireguard/post-down.txt
+       - UI_TRAFFIC_STATS=true
+       - UI_CHART_TYPE=2
+       - WG_ENABLE_ONE_TIME_LINKS=true
+       - UI_ENABLE_SORT_CLIENTS=true
+       - WG_ENABLE_EXPIRES_TIME=true
+       - VIRTUAL_PORT=51821
+     sysctls:
+       - net.ipv4.conf.all.src_valid_mark=1
+       - net.ipv4.ip_forward=1
+     cap_add:
+       - NET_ADMIN
+       - SYS_MODULE
+     devices:
+       - /dev/net/tun:/dev/net/tun
+     networks:
+       - nginx
+   beszel:
+     image: henrygd/beszel:latest
+     container_name: beszel
+     restart: unless-stopped
+     deploy:
+       resources:
+         limits:
+           memory: 64M
+         reservations:
+           memory: 32M
+     volumes:
+       - ./beszel:/beszel_data
+     environment:
+       - VIRTUAL_PORT=8090
+     healthcheck:
+       test: ['CMD', '/beszel', 'health', '--url', 'http://localhost:8090']
+       start_period: 5s
+       retries: 3
+       interval: 120s
+     networks:
+       - nginx
+   watchtower:
+     image: containrrr/watchtower:latest
+     container_name: watchtower
+     restart: unless-stopped
+     deploy:
+       resources:
+         limits:
+           memory: 32M
+         reservations:
+           memory: 16M
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock:ro
+     networks:
+       - nginx
+networks:
+   nginx:
+     driver: bridge
+     name: nginx
+volumes:
+  conf.d:
+  vhost.d:
+  html:
+  certs:
+  etc_wireguard:
