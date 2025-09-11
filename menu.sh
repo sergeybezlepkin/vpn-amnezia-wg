@@ -217,7 +217,7 @@ script1() {
 	else
                 echo -e "${RED}The problem is on the side of the certificate authority. The script will be stopped in an emergency, try to start it again in a few minutes${NC}"
                 docker compose -f $compose_file down &> /dev/null
-                docker volume rm vpn-amnezia-wg_main_conf.d vpn-amnezia-wg_main_vhost.d vpn-amnezia-wg_main_html vpn-amnezia-wg_main_certs vpn-amnezia-wg_main_etc_wireguard &> /dev/null
+                docker volume rm vpn-amnezia-wg-main_conf.d vpn-amnezia-wg-main_vhost.d vpn-amnezia-wg-main_html vpn-amnezia-wg-main_certs vpn-amnezia-wg-main_etc_wireguard &> /dev/null
                 rm -r $compose_file &> /dev/null
                 curl -L -O https://raw.githubusercontent.com/sergeybezlepkin/vpn-amnezia-wg/main/compose.yml &> /dev/null
                 exit 1
@@ -228,7 +228,7 @@ script1() {
     else
                 echo -e "Your port $random_wg_port is not open. You need to contact your service provider and show the output below. And run the script again${NC}"
                 docker compose -f $compose_file down &> /dev/null
-                docker volume rm vpn-amnezia-wg_main_conf.d vpn-amnezia-wg_main_vhost.d vpn-amnezia-wg_main_html vpn-amnezia-wg_main_certs vpn-amnezia-wg_main_etc_wireguard &> /dev/null
+                docker volume rm vpn-amnezia-wg-main_conf.d vpn-amnezia-wg-main_vhost.d vpn-amnezia-wg-main_html vpn-amnezia-wg-main_certs vpn-amnezia-wg-main_etc_wireguard &> /dev/null
                 rm -r $compose_file &> /dev/null
                 curl -L -O https://raw.githubusercontent.com/sergeybezlepkin/vpn-amnezia-wg/main/compose.yml &> /dev/null
                 nmap -sU -p $random_wg_port $ip
