@@ -1,0 +1,23 @@
+services:
+  beszel-agent:
+     image: henrygd/beszel-agent:latest
+     container_name: beszel-agent
+     restart: unless-stopped
+     deploy:
+       resources:
+         limits:
+           memory: 32M
+         reservations:
+           memory: 16M
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock:ro
+     environment:
+       LISTEN:
+       KEY: ""
+       HUB_URL:
+     healthcheck:
+       test: ['CMD', '/agent', 'health']
+       start_period: 5s
+       retries: 3
+       interval: 120s
+     network_mode: host
