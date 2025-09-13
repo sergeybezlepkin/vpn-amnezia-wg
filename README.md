@@ -76,6 +76,12 @@ The script also offers other actions:
 -  Remind whether the server is running and what domain names are registered (item 4)
 -  Configure notifications in Telegram in the monitoring system (item 5)
 
+After setup and installation, the system will have the following containers
+
+<div align="center">
+  <img src="/docs/screenshots/cont_amn.PNG" width="100%" /> 
+</div>
+
 ## [Download the client for Windows, Linux, Android](https://github.com/amnezia-vpn/amnezia-client/releases)
 ## [Download the client for Mac, iPhone, iPad](https://apps.apple.com/ru/app/amneziawg/id6478942365)
 
