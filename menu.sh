@@ -5,7 +5,6 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 script1() {
-	set -e
 
 	compose_file="$PWD/compose.yml"
 
@@ -384,7 +383,6 @@ script1() {
 
 script2() {
 
-	set -e
 	echo
 	container1='amnezia'
         if docker ps -a --format '{{.Names}}' | grep -q "^${container1}\$"; then
@@ -449,7 +447,6 @@ script2() {
 
 script3() {
 
-	set -e
 	echo
 	container2='beszel'
         if docker ps -a --format '{{.Names}}' | grep -q "^${container2}\$"; then
@@ -534,7 +531,6 @@ script3() {
 
 script4() {
 
-	set -e
 	echo
 	compose_file="$PWD/compose.yml"
 
@@ -559,7 +555,6 @@ script4() {
 
 script5() {
 
-	set -e
 	echo
 	container2='beszel'
         if docker ps -a --format '{{.Names}}' | grep -q "^${container2}\$"; then
